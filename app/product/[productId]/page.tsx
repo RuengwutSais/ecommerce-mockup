@@ -26,7 +26,7 @@ interface ProductDetailProps {
 export default function ProductDetail({ params }: ProductDetailProps) {
   const id = params.productId;
   console.log(id);
-  const [productDeep, setProductDeep] = useState<Product[]>([]);
+  const [productDeep, setProductDeep] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +37,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        const productData = data;
+        const productData = data as Product;
         console.log(productData);
         setProductDeep(productData);
       } catch (error) {
@@ -81,8 +81,8 @@ export default function ProductDetail({ params }: ProductDetailProps) {
           <div className="relative flex shadow-lg">
             <div className="flex w-full overflow-auto border-t border-slate-200">
               <div className="flex">
-                {productDeep.images &&
-                  productDeep.images.map((image, index) => (
+                {productDeep?.images &&
+                  productDeep?.images.map((image, index) => (
                     <div
                       key={index}
                       className="relative w-40 h-40 flex-shrink-0 rounded-sm"
@@ -112,25 +112,25 @@ export default function ProductDetail({ params }: ProductDetailProps) {
           </a>
           <div>
             <h1 className="leading-relaxed font-extrabold text-3xl text-blue-600 py-2 sm:py-4">
-              {productDeep.title}
+              {productDeep?.title}
             </h1>
-            <p className="font-medium text-lg">{productDeep.description}</p>
+            <p className="font-medium text-lg">{productDeep?.description}</p>
             <p className="font-bold text-lg py-4">
-              {productDeep.brand}, {productDeep.category}
+              {productDeep?.brand}, {productDeep?.category}
             </p>
             <div className="flex items-center justify-start text-2xl py-4">
               <div className="text-amber-400 flex gap-1 items-center">
-                {generateStarIcons(productDeep.rating)}
+                {generateStarIcons(productDeep?.rating ?? 0)}
               </div>
               <span className="pl-1 text-sm text-start">
-                ({productDeep.rating})
+                ({productDeep?.rating})
               </span>
             </div>
             <div className="item-center flex flex-wrap justify-start gap-4 py-4">
               <span className="inline-flex items-center justify-center rounded bg-blue-600 text-xl font-bold text-white p-2 w-20 h-10">
-                -{Math.trunc(productDeep.discountPercentage)}%
+                -{Math.trunc(productDeep?.discountPercentage ?? 0)}%
               </span>
-              <p className="font-bold text-4xl">${productDeep.price}</p>
+              <p className="font-bold text-4xl">${productDeep?.price}</p>
             </div>
 
             <div className="w-full py-4">
@@ -146,7 +146,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                   className="text-gray-600 form-input border border-gray-300 w-full focus:outline-blue-600 p-3 rounded-sm focus:border-blue-100 focus:ring-blue-100"
                 />
                 <p className="pt-2 text-gray-600">
-                  {productDeep.stock} items in stock
+                  {productDeep?.stock} items in stock
                 </p>
               </div>
             </div>
